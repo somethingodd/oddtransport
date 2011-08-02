@@ -18,47 +18,67 @@ import java.util.logging.Logger;
 
 public class OddTransport extends JavaPlugin {
     private final String configurationFile = "plugins" + File.separator + "OddTransport.yml";
-    private Logger log;
-	private PluginDescriptionFile info;
-    private Configuration configuration;
-    private OddItem oddItem;
-    protected String logPrefix;
-    protected ItemStack block;
-    protected ItemStack create;
-    protected ItemStack destroy;
-    protected ItemStack use;
-    protected int delay;
-    protected ConcurrentMap<Player, Integer> queuedTransports;
-    protected ConcurrentMap<Location, Player> transporters;
-    protected ConcurrentMap<Location, Location> locations;
-    protected OddTransportCommand oddTransportCommand;
-    protected OddTransportPlayerListener oddTransportPlayerListener;
+    private Logger log = null;
+	private PluginDescriptionFile info = null;
+    private OddItem oddItem = null;
+    protected String logPrefix = null;
+    protected ItemStack block = null;
+    protected ItemStack create = null;
+    protected ItemStack destroy = null;
+    protected ItemStack use = null;
+    protected Integer delay = null;
+    protected ConcurrentMap<Player, Integer> queuedTransports = null;
+    protected ConcurrentMap<Location, Player> transporters = null;
+    protected ConcurrentMap<Location, Location> locations = null;
+    protected OddTransportCommand oddTransportCommand = null;
+    protected OddTransportPlayerListener oddTransportPlayerListener = null;
 
     protected void configure() {
         File configurationFile = new File(this.configurationFile);
         if (!configurationFile.exists())
             writeConfig();
-        configuration = new Configuration(configurationFile);
+        Configuration configuration = new Configuration(configurationFile);
         configuration.load();
-        try {
-            block = oddItem.getItemStack(configuration.getString("items.block", "LAPIS_BLOCK"));
-        } catch (IllegalArgumentException e) {
-            block = new ItemStack(Material.LAPIS_BLOCK, 1, (short) 0);
+        if (oddItem != null) {
+            ItemStack[] items = oddItem.getItemGroup("OddTransport");
+            switch (items.length) {
+                case 4:
+                    this.use = items[3];
+                case 3:
+                    this.destroy = items[2];
+                case 2:
+                    this.create = items[1];
+                case 1:
+                    this.block = items[0];
+            }
         }
-        try {
-            create = oddItem.getItemStack(configuration.getString("items.create", "LAPIS_ORE"));
-        } catch (IllegalArgumentException e) {
-            create = new ItemStack(Material.LAPIS_ORE, 1, (short) 0);
+        if (this.block == null) {
+            try {
+                block = oddItem.getItemStack(configuration.getString("items.block", "LAPI_BLOCK"));
+            } catch (IllegalArgumentException e) {
+                block = new ItemStack(Material.LAPIS_BLOCK, 1, (short) 0);
+            }
         }
-        try {
-            destroy = oddItem.getItemStack(configuration.getString("items.destroy", "DIRT"));
-        } catch (IllegalArgumentException e) {
-            destroy = new ItemStack(Material.DIRT, 1, (short) 0);
+        if (this.create == null) {
+            try {
+                create = oddItem.getItemStack(configuration.getString("items.create", "LAPIS_ORE"));
+            } catch (IllegalArgumentException e) {
+                create = new ItemStack(Material.LAPIS_ORE, 1, (short) 0);
+            }
         }
-        try {
-            use = oddItem.getItemStack(configuration.getString("items.use", "AIR"));
-        } catch (IllegalArgumentException e) {
-            use = new ItemStack(Material.AIR, 1, (short) 0);
+        if (this.destroy == null) {
+            try {
+                destroy = oddItem.getItemStack(configuration.getString("items.destroy", "DIRT"));
+            } catch (IllegalArgumentException e) {
+                destroy = new ItemStack(Material.DIRT, 1, (short) 0);
+            }
+        }
+        if (this.use == null) {
+            try {
+                use = oddItem.getItemStack(configuration.getString("items.use", "AIR"));
+            } catch (IllegalArgumentException e) {
+                use = new ItemStack(Material.AIR, 1, (short) 0);
+            }
         }
         this.delay = configuration.getInt("delay", 3);
     }
