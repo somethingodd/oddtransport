@@ -15,36 +15,32 @@ permissions:
   oddtransport:
     description: Gives access to all OddTransport commands
     children:
-      oddtransport.clear: true
+      oddtransport.clear: op
+      oddtransport.clear.own: true
       oddtransport.create: true
-      oddtransport.destroy: true
+      oddtransport.destroy: op
+      oddtransport.destroy.own: true
       oddtransport.list: true
       oddtransport.use: true
     oddtransport.clear:
-      children:
-        oddtransport.clear.own: true
-      default: true
+      default: op
       description: Allows clearing of all transporters
     oddtransport.clear.own:
-      default: op
+      default: true
       description: Allows clearing owned transporters
     oddtransport.create:
       default: op
       description: Allows creation of transporters
     oddtransport.destroy:
-      children:
-        oddtransport.destroy.own: true
       default: op
       description: Allows destruction of all transporters
     oddtransport.destroy.own:
       default: true
       description: Allows destruction of owned transporters
     oddtransport.use:
-      children:
-        oddtransport.use.own: true
       default: true
-      description: Allows use of transporters
-    oddtransport.use.own:
+      description: Allows use of owner transporters
+    oddtransport.use.other:
       default: true
-      description: Allows use of owned transporters
+      description: Allows use of all transporters
 

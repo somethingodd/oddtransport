@@ -12,6 +12,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.util.config.Configuration;
 
 import java.io.*;
+import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.logging.Logger;
@@ -40,44 +41,44 @@ public class OddTransport extends JavaPlugin {
         Configuration configuration = new Configuration(configurationFile);
         configuration.load();
         if (oddItem != null) {
-            ItemStack[] items = oddItem.getItemGroup("OddTransport");
-            switch (items.length) {
+            List<ItemStack> items = oddItem.getItemGroup("OddTransport");
+            switch (items.size()) {
                 case 4:
-                    this.use = items[3];
+                    this.use = items.get(3);
                 case 3:
-                    this.destroy = items[2];
+                    this.destroy = items.get(2);
                 case 2:
-                    this.create = items[1];
+                    this.create = items.get(1);
                 case 1:
-                    this.block = items[0];
+                    this.block = items.get(0);
             }
         }
         if (this.block == null) {
             try {
-                block = oddItem.getItemStack(configuration.getString("items.block", "LAPI_BLOCK"));
+                block = oddItem.getItemStack(configuration.getString("items.block", ""));
             } catch (IllegalArgumentException e) {
-                block = new ItemStack(Material.LAPIS_BLOCK, 1, (short) 0);
+                block = new ItemStack(Material.getMaterial("LAPIS_BLOCK"), 1, (short) 0);
             }
         }
         if (this.create == null) {
             try {
-                create = oddItem.getItemStack(configuration.getString("items.create", "LAPIS_ORE"));
+                create = oddItem.getItemStack(configuration.getString("items.create", ""));
             } catch (IllegalArgumentException e) {
-                create = new ItemStack(Material.LAPIS_ORE, 1, (short) 0);
+                create = new ItemStack(Material.getMaterial("LAPIS_ORE"), 1, (short) 0);
             }
         }
         if (this.destroy == null) {
             try {
-                destroy = oddItem.getItemStack(configuration.getString("items.destroy", "DIRT"));
+                destroy = oddItem.getItemStack(configuration.getString("items.destroy", ""));
             } catch (IllegalArgumentException e) {
-                destroy = new ItemStack(Material.DIRT, 1, (short) 0);
+                destroy = new ItemStack(Material.getMaterial("DIRT"), 1, (short) 0);
             }
         }
         if (this.use == null) {
             try {
-                use = oddItem.getItemStack(configuration.getString("items.use", "AIR"));
+                use = oddItem.getItemStack(configuration.getString("items.use", ""));
             } catch (IllegalArgumentException e) {
-                use = new ItemStack(Material.AIR, 1, (short) 0);
+                use = new ItemStack(Material.getMaterial("AIR"), 1, (short) 0);
             }
         }
         this.delay = configuration.getInt("delay", 3);

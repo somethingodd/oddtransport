@@ -14,10 +14,12 @@ public class OddTransportPlayerListener extends PlayerListener {
 
     private OddTransport oddTransport;
     private ConcurrentMap<Player, Location> locations = null;
+    protected ConcurrentMap<Player, Integer> queuedTransports;
 
     public OddTransportPlayerListener (OddTransport oddTransport) {
         this.oddTransport = oddTransport;
         locations = new ConcurrentHashMap<Player, Location>();
+        queuedTransports = new ConcurrentHashMap<Player, Integer>();
     }
 
     @Override
@@ -28,68 +30,64 @@ public class OddTransportPlayerListener extends PlayerListener {
         ItemStack inHand = player.getItemInHand();
         ItemStack item = new ItemStack(event.getClickedBlock().getType(), 1, event.getClickedBlock().getData());
         Location location = event.getClickedBlock().getLocation();
-        if (!itemStackEquals(item, oddTransport.block))
+        if (!itemStackEquals(item, oddTransport.block)) {
             return;
-        if (itemStackEquals(inHand, oddTransport.use) && player.hasPermission("oddtransport.use")) {
-            if (oddTransport.transporters.get(location) == null)
-                return;
-            if (!oddTransport.transporters.get(location).equals(player) && !player.hasPermission("oddtransport.use.other"))
-                return;
-            Integer queued = oddTransport.queuedTransports.get(player);
-            if (queued != null)
-                oddTransport.getServer().getScheduler().cancelTask(queued);
-            Location to = oddTransport.locations.get(location);
-            to.setY(to.getY() + 1);
-            player.sendMessage("Teleport commencing in " + oddTransport.delay + " seconds...");
-            queued = oddTransport.getServer().getScheduler().scheduleSyncDelayedTask(oddTransport, new OddTransportTransportTask(to, player), oddTransport.delay * 20);
-            oddTransport.queuedTransports.put(player, queued);
-        } else if (itemStackEquals(inHand, oddTransport.create) && player.hasPermission("oddtransport.create")) {
-            if (oddTransport.transporters.get(location) != null) {
-                player.sendMessage(oddTransport.logPrefix + "There is already a transporter here.");
-                return;
-            }
-            Location location2 = locations.get(player);
-            if (location2 != null) {
+        }
+        if (oddTransport.locations.get(location) == null && oddTransport.transporters.get(location) == null) {
+            if (itemStackEquals(inHand, oddTransport.create)/* && player.hasPermission("oddtransport.create")*/) {
                 oddTransport.transporters.put(location, player);
-                oddTransport.transporters.put(location2, player);
-                oddTransport.locations.put(location, location2);
-                oddTransport.locations.put(location2, location);
-                locations.remove(player);
-                player.sendMessage("Transporter linked: " + location2.getX() + "," + location2.getY() + "," + location2.getZ() + " to " + location.getX() + "," + location.getY() + "," + location.getZ() + ".");
-                return;
+                Location linkLoc = locations.get(player);
+                if (linkLoc == null) {
+                    locations.put(player, location);
+                    player.sendMessage(oddTransport.logPrefix + "Transporter created at " + location.getX() + "," + location.getY() + "," + location.getZ() + ".");
+                } else {
+                    oddTransport.locations.put(location, linkLoc);
+                    oddTransport.locations.put(linkLoc, location);
+                    locations.remove(player);
+                    player.sendMessage(oddTransport.logPrefix + "Transporter linked from " + location.getX() + "," + location.getY() + "," + location.getZ() + " to " + linkLoc.getX() + "," + linkLoc.getY() + "," + linkLoc.getZ() + ".");
+                }
             }
-            locations.put(player, location);
-            player.sendMessage("Transporter ready at " + location.getX() + "," + location.getY() + "," + location.getZ() + ". Select another transporter to link.");
-
-        } else if (itemStackEquals(inHand, oddTransport.destroy) && player.hasPermission("oddtransport.destroy")) {
-            if (oddTransport.transporters.get(location) == null) {
-                return;
+        } else {
+            if (itemStackEquals(inHand, oddTransport.destroy)) {
+                if (/*player.hasPermission("oddtransport.destroy.other") || */(/*player.hasPermission("oddtransport.destroy.own") && */oddTransport.transporters.get(location).equals(player))) {
+                    Location l2 = oddTransport.locations.get(location);
+                    oddTransport.locations.remove(location);
+                    oddTransport.locations.remove(l2);
+                    oddTransport.transporters.remove(location);
+                    oddTransport.transporters.remove(l2);
+                    player.sendMessage("Transport link between " + location.getX() + "," + location.getY() + "," + location.getZ() + " and " + l2.getX() + "," + l2.getY() + "," + l2.getZ() + " destroyed.");
+                }
+            } else if (itemStackEquals(inHand, oddTransport.use)) {
+                if (oddTransport.transporters.get(location).equals(player) || player.hasPermission("oddtransport.use.other")) {
+                    Location l2 = oddTransport.locations.get(location);
+                    player.sendMessage(oddTransport.logPrefix + "Transporting to " + l2.getX() + "," + l2.getY() + "," + l2.getZ() + " in " + oddTransport.delay + " seconds...");
+                    Integer queue = queuedTransports.get(player);
+                    if (queue != null) {
+                        oddTransport.getServer().getScheduler().cancelTask(queue);
+                        player.sendMessage("Transport cancelled.");
+                        queuedTransports.remove(player);
+                    }
+                    queue = oddTransport.getServer().getScheduler().scheduleSyncDelayedTask(oddTransport, new OddTransportTransportTask(l2, player, this), oddTransport.delay * 20);
+                    queuedTransports.put(player, queue);
+                }
             }
-            if (oddTransport.locations.get(location) != player && !player.hasPermission("oddtransport.destroy.other")) {
-                player.sendMessage("You do not have permission to destroy this transporter.");
-                return;
-            }
-            oddTransport.locations.remove(location);
-            oddTransport.transporters.remove(oddTransport.transporters.get(location));
-            oddTransport.transporters.remove(location);
         }
     }
 
     @Override
     public void onPlayerMove(PlayerMoveEvent event) {
+        if (event.getFrom().getBlockX() == event.getTo().getBlockX() && event.getFrom().getBlockY() == event.getTo().getBlockY() && event.getFrom().getBlockZ() == event.getTo().getBlockZ())
+            return;
         Player player = event.getPlayer();
-        Integer queue = oddTransport.queuedTransports.get(player);
+        Integer queue = queuedTransports.get(player);
         if (queue != null) {
+            queuedTransports.remove(player);
             oddTransport.getServer().getScheduler().cancelTask(queue);
             player.sendMessage("Transport cancelled.");
         }
     }
 
     private boolean itemStackEquals(ItemStack a, ItemStack b) {
-        if (a.getTypeId() != b.getTypeId())
-            return false;
-        if (a.getDurability() != b.getDurability())
-            return false;
-        return true;
+        return (a.getTypeId() == b.getTypeId() && a.getDurability() == b.getDurability());
     }
 }
