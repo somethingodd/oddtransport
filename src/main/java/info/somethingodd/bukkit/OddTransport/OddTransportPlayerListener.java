@@ -49,7 +49,7 @@ public class OddTransportPlayerListener extends PlayerListener {
             }
         } else {
             if (itemStackEquals(inHand, oddTransport.destroy)) {
-                if (/*player.hasPermission("oddtransport.destroy.other") || */(/*player.hasPermission("oddtransport.destroy.own") && */oddTransport.transporters.get(location).equals(player))) {
+                if (player.hasPermission("oddtransport.destroy") || oddTransport.transporters.get(location).equals(player)) {
                     Location l2 = oddTransport.locations.get(location);
                     oddTransport.locations.remove(location);
                     oddTransport.locations.remove(l2);

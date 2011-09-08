@@ -7,40 +7,29 @@ softdepend: [OddItem]
 description: >
              Transportation
 commands:
-  oddtransport:
-    usage: |
-           /<command>
-           Lists your transporters.
+    oddtransport:
+        usage: |
+               /<command>
+               Lists your transporters.
 permissions:
-  oddtransport:
-    description: Gives access to all OddTransport commands
-    children:
-      oddtransport.clear: op
-      oddtransport.clear.own: true
-      oddtransport.create: true
-      oddtransport.destroy: op
-      oddtransport.destroy.own: true
-      oddtransport.list: true
-      oddtransport.use: true
+    oddtransport:
+        children:
+            oddtransport.clear: op
+            oddtransport.create: true
+            oddtransport.destroy: op
+            oddtransport.list: true
+            oddtransport.use: true
+        default: op
+        description: Gives access to all OddTransport commands
     oddtransport.clear:
-      default: op
-      description: Allows clearing of all transporters
-    oddtransport.clear.own:
-      default: true
-      description: Allows clearing owned transporters
+        default: op
+        description: Allows clearing of all transporters
     oddtransport.create:
-      default: op
-      description: Allows creation of transporters
+        default: op
+        description: Allows creation of transporters
     oddtransport.destroy:
-      default: op
-      description: Allows destruction of all transporters
-    oddtransport.destroy.own:
-      default: true
-      description: Allows destruction of owned transporters
+        default: op
+        description: Allows destruction of all transporters
     oddtransport.use:
-      default: true
-      description: Allows use of owner transporters
-    oddtransport.use.other:
-      default: true
-      description: Allows use of all transporters
-
+        default: true
+        description: Allows use of all transporters
