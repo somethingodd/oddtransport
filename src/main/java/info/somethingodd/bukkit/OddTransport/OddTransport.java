@@ -30,6 +30,7 @@ public class OddTransport extends JavaPlugin {
     protected ItemStack destroy = null;
     protected ItemStack use = null;
     protected Integer delay = null;
+    protected Boolean consume = null;
     protected ConcurrentMap<Player, Integer> queuedTransports = null;
     protected ConcurrentMap<Location, Player> transporters = null;
     protected ConcurrentMap<Location, Location> locations = null;
@@ -42,16 +43,20 @@ public class OddTransport extends JavaPlugin {
             writeConfig();
         Configuration configuration = new Configuration(configurationFile);
         configuration.load();
-        OddItemGroup items = OddItem.getItemGroup("OddTransport");
-        switch (items.size()) {
-            case 4:
-                this.use = items.get(3);
-            case 3:
-                this.destroy = items.get(2);
-            case 2:
-                this.create = items.get(1);
-            case 1:
-                this.block = items.get(0);
+        try {
+            OddItemGroup items = OddItem.getItemGroup("OddTransport");
+            switch (items.size()) {
+                case 4:
+                    this.use = items.get(3);
+                case 3:
+                    this.destroy = items.get(2);
+                case 2:
+                    this.create = items.get(1);
+                case 1:
+                    this.block = items.get(0);
+            }
+        } catch (Exception e) {
+            log.info(logPrefix + "OddItem not available.");
         }
         if (this.block == null) {
             try {
@@ -82,6 +87,7 @@ public class OddTransport extends JavaPlugin {
             }
         }
         this.delay = configuration.getInt("delay", 3);
+        this.consume = configuration.getBoolean("consume", true);
     }
 
     @Override

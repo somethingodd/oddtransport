@@ -1,3 +1,5 @@
+# Whether create, destroy, and use items are consumed
+consume: true
 # Delay in seconds
 delay: 3
 # Item list
