@@ -3,7 +3,6 @@ package info.somethingodd.bukkit.OddTransport;
 import info.somethingodd.bukkit.OddItem.OddItem;
 import info.somethingodd.bukkit.OddItem.OddItemGroup;
 import org.bukkit.Location;
-import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.inventory.ItemStack;
@@ -43,49 +42,11 @@ public class OddTransport extends JavaPlugin {
             writeConfig();
         Configuration configuration = new Configuration(configurationFile);
         configuration.load();
-        try {
-            OddItemGroup items = OddItem.getItemGroup("oddtransport");
-            switch (items.size()) {
-                case 4:
-                    this.use = items.get(3);
-                case 3:
-                    this.destroy = items.get(2);
-                case 2:
-                    this.create = items.get(1);
-                case 1:
-                    this.block = items.get(0);
-            }
-        } catch (Exception e) {
-            log.info(logPrefix + "OddItemBase not available.");
-        }
-        if (this.block == null) {
-            try {
-                block = OddItem.getItemStack(configuration.getString("items.block", ""));
-            } catch (IllegalArgumentException e) {
-                block = new ItemStack(Material.getMaterial("LAPIS_BLOCK"), 1, (short) 0);
-            }
-        }
-        if (this.create == null) {
-            try {
-                create = OddItem.getItemStack(configuration.getString("items.create", ""));
-            } catch (IllegalArgumentException e) {
-                create = new ItemStack(Material.getMaterial("LAPIS_ORE"), 1, (short) 0);
-            }
-        }
-        if (this.destroy == null) {
-            try {
-                destroy = OddItem.getItemStack(configuration.getString("items.destroy", ""));
-            } catch (IllegalArgumentException e) {
-                destroy = new ItemStack(Material.getMaterial("DIRT"), 1, (short) 0);
-            }
-        }
-        if (this.use == null) {
-            try {
-                use = OddItem.getItemStack(configuration.getString("items.use", ""));
-            } catch (IllegalArgumentException e) {
-                use = new ItemStack(Material.getMaterial("AIR"), 1, (short) 0);
-            }
-        }
+        OddItemGroup items = OddItem.getItemGroup("oddtransport");
+        this.block = items.get(0);
+        this.create = items.get(1);
+        this.destroy = items.get(2);
+        this.use = items.get(3);
         this.delay = configuration.getInt("delay", 3);
         this.consume = configuration.getBoolean("consume", true);
     }

@@ -1,5 +1,6 @@
 package info.somethingodd.bukkit.OddTransport;
 
+import info.somethingodd.bukkit.OddItem.OddItem;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerInteractEvent;
@@ -30,11 +31,11 @@ public class OddTransportPlayerListener extends PlayerListener {
         ItemStack inHand = player.getItemInHand();
         ItemStack item = new ItemStack(event.getClickedBlock().getType(), 1, event.getClickedBlock().getData());
         Location location = event.getClickedBlock().getLocation();
-        if (!itemStackEquals(item, oddTransport.block)) {
+        if (!OddItem.compare(item, oddTransport.block)) {
             return;
         }
         if (oddTransport.locations.get(location) == null && oddTransport.transporters.get(location) == null) {
-            if (itemStackEquals(inHand, oddTransport.create)/* && player.hasPermission("oddtransport.create")*/) {
+            if (OddItem.compare(inHand, oddTransport.create)/* && player.hasPermission("oddtransport.create")*/) {
                 oddTransport.transporters.put(location, player);
                 Location linkLoc = locations.get(player);
                 if (linkLoc == null) {
@@ -45,10 +46,11 @@ public class OddTransportPlayerListener extends PlayerListener {
                     oddTransport.locations.put(linkLoc, location);
                     locations.remove(player);
                     player.sendMessage(oddTransport.logPrefix + "Transporter linked from " + location.getX() + "," + location.getY() + "," + location.getZ() + " to " + linkLoc.getX() + "," + linkLoc.getY() + "," + linkLoc.getZ() + ".");
+                    if (oddTransport.consume) OddItem.removeItem(player, oddTransport.create);
                 }
             }
         } else {
-            if (itemStackEquals(inHand, oddTransport.destroy)) {
+            if (OddItem.compare(inHand, oddTransport.destroy)) {
                 if (player.hasPermission("oddtransport.destroy") || oddTransport.transporters.get(location).equals(player)) {
                     Location l2 = oddTransport.locations.get(location);
                     oddTransport.locations.remove(location);
@@ -56,8 +58,9 @@ public class OddTransportPlayerListener extends PlayerListener {
                     oddTransport.transporters.remove(location);
                     oddTransport.transporters.remove(l2);
                     player.sendMessage("Transport link between " + location.getX() + "," + location.getY() + "," + location.getZ() + " and " + l2.getX() + "," + l2.getY() + "," + l2.getZ() + " destroyed.");
+                    if (oddTransport.consume) OddItem.removeItem(player, oddTransport.destroy);
                 }
-            } else if (itemStackEquals(inHand, oddTransport.use)) {
+            } else if (OddItem.compare(inHand, oddTransport.use)) {
                 if (oddTransport.transporters.get(location).equals(player) || player.hasPermission("oddtransport.use.other")) {
                     Location l2 = oddTransport.locations.get(location);
                     player.sendMessage(oddTransport.logPrefix + "Transporting to " + l2.getX() + "," + l2.getY() + "," + l2.getZ() + " in " + oddTransport.delay + " seconds...");
@@ -69,6 +72,7 @@ public class OddTransportPlayerListener extends PlayerListener {
                     }
                     queue = oddTransport.getServer().getScheduler().scheduleSyncDelayedTask(oddTransport, new OddTransportTransportTask(l2, player, this), oddTransport.delay * 20);
                     queuedTransports.put(player, queue);
+                    if (oddTransport.consume) OddItem.removeItem(player, oddTransport.use);
                 }
             }
         }
@@ -85,9 +89,5 @@ public class OddTransportPlayerListener extends PlayerListener {
             oddTransport.getServer().getScheduler().cancelTask(queue);
             player.sendMessage("Transport cancelled.");
         }
-    }
-
-    private boolean itemStackEquals(ItemStack a, ItemStack b) {
-        return (a.getTypeId() == b.getTypeId() && a.getDurability() == b.getDurability());
     }
 }

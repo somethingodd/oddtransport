@@ -2,13 +2,3 @@
 consume: true
 # Delay in seconds
 delay: 3
-# Item list
-items:
-  # Block that acts as transporter
-  block: LAPIS_BLOCK
-  # Item in hand to create transporter
-  create: BLUE
-  # Item in hand to destroy transporter
-  destroy: RED
-  # Item in hand to use transporter
-  use: AIR
