@@ -44,7 +44,7 @@ public class OddTransport extends JavaPlugin {
         Configuration configuration = new Configuration(configurationFile);
         configuration.load();
         try {
-            OddItemGroup items = OddItem.getItemGroup("OddTransport");
+            OddItemGroup items = OddItem.getItemGroup("oddtransport");
             switch (items.size()) {
                 case 4:
                     this.use = items.get(3);
@@ -56,7 +56,7 @@ public class OddTransport extends JavaPlugin {
                     this.block = items.get(0);
             }
         } catch (Exception e) {
-            log.info(logPrefix + "OddItem not available.");
+            log.info(logPrefix + "OddItemBase not available.");
         }
         if (this.block == null) {
             try {
