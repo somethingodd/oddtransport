@@ -2,21 +2,31 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>info.somethingodd.bukkit</groupId>
   <artifactId>OddTransport</artifactId>
-  <version>0.1</version>
+  <version>dev-SNAPSHOT</version>
   <name>OddTransport</name>
   <url>http://bukkit.somethingodd.info</url>
   <dependencies>
     <dependency>
       <groupId>org.bukkit</groupId>
       <artifactId>bukkit</artifactId>
-      <version>0.0.1-SNAPSHOT</version>
+      <version>1.0.1-R1</version>
     </dependency>
     <dependency>
       <groupId>info.somethingodd.bukkit</groupId>
       <artifactId>OddItem</artifactId>
-      <version>0.8</version>
+      <version>dev-SNAPSHOT</version>
     </dependency>
   </dependencies>
+  <repositories>
+      <repository>
+          <id>bukkit</id>
+          <url>http://repo.bukkit.org/content/groups/public</url>
+      </repository>
+      <repository>
+          <id>somethingodd</id>
+          <url>http://repo.somethingodd.info</url>
+      </repository>
+  </repositories>
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
   </properties>
