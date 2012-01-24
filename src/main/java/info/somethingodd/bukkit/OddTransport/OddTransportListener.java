@@ -16,30 +16,32 @@ package info.somethingodd.bukkit.OddTransport;
 import info.somethingodd.bukkit.OddItem.OddItem;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerInteractEvent;
-import org.bukkit.event.player.PlayerListener;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.inventory.ItemStack;
 
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * @author Gordon Pettey (petteyg359@gmail.com)
  */
-public class OddTransportPlayerListener extends PlayerListener {
+public class OddTransportListener implements Listener {
 
     private OddTransport oddTransport;
-    private ConcurrentMap<Player, Location> locations = null;
-    protected ConcurrentMap<Player, Integer> queuedTransports;
+    private Map<Player, Location> locations;
+    protected Map<Player, Integer> queuedTransports;
 
-    public OddTransportPlayerListener (OddTransport oddTransport) {
+    public OddTransportListener(OddTransport oddTransport) {
         this.oddTransport = oddTransport;
-        locations = new ConcurrentHashMap<Player, Location>();
-        queuedTransports = new ConcurrentHashMap<Player, Integer>();
+        locations = Collections.synchronizedMap(new HashMap<Player, Location>());
+        queuedTransports = Collections.synchronizedMap(new HashMap<Player, Integer>());
     }
 
-    @Override
+    @EventHandler
     public void onPlayerInteract(PlayerInteractEvent event) {
         if (!event.hasBlock() || !event.hasItem())
             return;
@@ -47,11 +49,11 @@ public class OddTransportPlayerListener extends PlayerListener {
         ItemStack inHand = player.getItemInHand();
         ItemStack item = new ItemStack(event.getClickedBlock().getType(), 1, event.getClickedBlock().getData());
         Location location = event.getClickedBlock().getLocation();
-        if (!OddItem.compare(item, oddTransport.block)) {
+        if (!OddItem.compare(item, oddTransport.oddTransportConfiguration.block)) {
             return;
         }
         if (oddTransport.locations.get(location) == null && oddTransport.transporters.get(location) == null) {
-            if (OddItem.compare(inHand, oddTransport.create)/* && player.hasPermission("oddtransport.create")*/) {
+            if (OddItem.compare(inHand, oddTransport.oddTransportConfiguration.create)/* && player.hasPermission("oddtransport.create")*/) {
                 oddTransport.transporters.put(location, player);
                 Location linkLoc = locations.get(player);
                 if (linkLoc == null) {
@@ -62,11 +64,11 @@ public class OddTransportPlayerListener extends PlayerListener {
                     oddTransport.locations.put(linkLoc, location);
                     locations.remove(player);
                     player.sendMessage(oddTransport.logPrefix + "Transporter linked from " + location.getX() + "," + location.getY() + "," + location.getZ() + " to " + linkLoc.getX() + "," + linkLoc.getY() + "," + linkLoc.getZ() + ".");
-                    if (oddTransport.consume) OddItem.removeItem(player, oddTransport.create);
+                    if (oddTransport.oddTransportConfiguration.consume) OddItem.removeItem(player, oddTransport.oddTransportConfiguration.create);
                 }
             }
         } else {
-            if (OddItem.compare(inHand, oddTransport.destroy)) {
+            if (OddItem.compare(inHand, oddTransport.oddTransportConfiguration.destroy)) {
                 if (player.hasPermission("oddtransport.destroy") || oddTransport.transporters.get(location).equals(player)) {
                     Location l2 = oddTransport.locations.get(location);
                     oddTransport.locations.remove(location);
@@ -74,27 +76,27 @@ public class OddTransportPlayerListener extends PlayerListener {
                     oddTransport.transporters.remove(location);
                     oddTransport.transporters.remove(l2);
                     player.sendMessage("Transport link between " + location.getX() + "," + location.getY() + "," + location.getZ() + " and " + l2.getX() + "," + l2.getY() + "," + l2.getZ() + " destroyed.");
-                    if (oddTransport.consume) OddItem.removeItem(player, oddTransport.destroy);
+                    if (oddTransport.oddTransportConfiguration.consume) OddItem.removeItem(player, oddTransport.oddTransportConfiguration.destroy);
                 }
-            } else if (OddItem.compare(inHand, oddTransport.use)) {
+            } else if (OddItem.compare(inHand, oddTransport.oddTransportConfiguration.use)) {
                 if (oddTransport.transporters.get(location).equals(player) || player.hasPermission("oddtransport.use.other")) {
                     Location l2 = oddTransport.locations.get(location);
-                    player.sendMessage(oddTransport.logPrefix + "Transporting to " + l2.getX() + "," + l2.getY() + "," + l2.getZ() + " in " + oddTransport.delay + " seconds...");
+                    player.sendMessage(oddTransport.logPrefix + "Transporting to " + l2.getX() + "," + l2.getY() + "," + l2.getZ() + " in " + oddTransport.oddTransportConfiguration.delay + " seconds...");
                     Integer queue = queuedTransports.get(player);
                     if (queue != null) {
                         oddTransport.getServer().getScheduler().cancelTask(queue);
                         player.sendMessage("Transport cancelled.");
                         queuedTransports.remove(player);
                     }
-                    queue = oddTransport.getServer().getScheduler().scheduleSyncDelayedTask(oddTransport, new OddTransportTransportTask(l2, player, this), oddTransport.delay * 20);
+                    queue = oddTransport.getServer().getScheduler().scheduleSyncDelayedTask(oddTransport, new OddTransportTransportTask(l2, player, this), oddTransport.oddTransportConfiguration.delay * 20);
                     queuedTransports.put(player, queue);
-                    if (oddTransport.consume) OddItem.removeItem(player, oddTransport.use);
+                    if (oddTransport.oddTransportConfiguration.consume) OddItem.removeItem(player, oddTransport.oddTransportConfiguration.use);
                 }
             }
         }
     }
 
-    @Override
+    @EventHandler
     public void onPlayerMove(PlayerMoveEvent event) {
         if (event.getFrom().getBlockX() == event.getTo().getBlockX() && event.getFrom().getBlockY() == event.getTo().getBlockY() && event.getFrom().getBlockZ() == event.getTo().getBlockZ())
             return;

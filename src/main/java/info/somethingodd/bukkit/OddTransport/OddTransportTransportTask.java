@@ -26,12 +26,12 @@ public class OddTransportTransportTask implements Runnable {
 
     private Location location;
     private Player player;
-    private OddTransportPlayerListener oddTransportPlayerListener;
+    private OddTransportListener oddTransportListener;
 
-    public OddTransportTransportTask(Location location, Player player, OddTransportPlayerListener oddTransportPlayerListener) {
+    public OddTransportTransportTask(Location location, Player player, OddTransportListener oddTransportListener) {
         this.location = new Location(location.getWorld(), location.getX(), location.getY() + 1, location.getZ());
         this.player = player;
-        this.oddTransportPlayerListener = oddTransportPlayerListener;
+        this.oddTransportListener = oddTransportListener;
     }
 
     public void run() {
@@ -49,7 +49,7 @@ public class OddTransportTransportTask implements Runnable {
                 return;
             }
         }
-        oddTransportPlayerListener.queuedTransports.remove(player);
+        oddTransportListener.queuedTransports.remove(player);
         player.teleport(location);
     }
 }
