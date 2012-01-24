@@ -40,7 +40,7 @@ public class OddTransportCommand implements CommandExecutor {
             case 1:
                 if (args[0].equals("info")) {
                     sender.sendMessage(oddTransport.logPrefix + "block create destroy use");
-                    sender.sendMessage(oddTransport.logPrefix + oddTransport.block.getType().toString()+";"+oddTransport.block.getDurability() + " " + oddTransport.create.getType().toString() + ";" + oddTransport.create.getDurability() + " " + oddTransport.destroy.getType().toString() + ";" + oddTransport.destroy.getDurability() + " " + oddTransport.use.getType().toString() + ";" + oddTransport.use.getDurability());
+                    sender.sendMessage(oddTransport.logPrefix + oddTransport.oddTransportConfiguration.block.getType().toString()+";"+ oddTransport.oddTransportConfiguration.block.getDurability() + " " + oddTransport.oddTransportConfiguration.create.getType().toString() + ";" + oddTransport.oddTransportConfiguration.create.getDurability() + " " + oddTransport.oddTransportConfiguration.destroy.getType().toString() + ";" + oddTransport.oddTransportConfiguration.destroy.getDurability() + " " + oddTransport.oddTransportConfiguration.use.getType().toString() + ";" + oddTransport.oddTransportConfiguration.use.getDurability());
 
                 } else if (args[0].equals("list")) {
                     Set<Entry<Location, Player>> es = oddTransport.transporters.entrySet();
