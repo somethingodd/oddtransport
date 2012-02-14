@@ -14,7 +14,7 @@
 package info.somethingodd.bukkit.OddTransport;
 
 import info.somethingodd.bukkit.OddItem.OddItem;
-import info.somethingodd.bukkit.OddItem.OddItemGroup;
+import info.somethingodd.bukkit.OddItem.configuration.OddItemGroup;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.inventory.ItemStack;
 
