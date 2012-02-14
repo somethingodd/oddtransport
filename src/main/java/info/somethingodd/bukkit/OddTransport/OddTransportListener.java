@@ -43,7 +43,7 @@ public class OddTransportListener implements Listener {
 
     @EventHandler
     public void onPlayerInteract(PlayerInteractEvent event) {
-        if (!event.hasBlock() || !event.hasItem())
+        if (!event.hasBlock() || !event.hasItem() || event.isCancelled())
             return;
         Player player = event.getPlayer();
         ItemStack inHand = player.getItemInHand();
@@ -98,7 +98,7 @@ public class OddTransportListener implements Listener {
 
     @EventHandler
     public void onPlayerMove(PlayerMoveEvent event) {
-        if (event.getFrom().getBlockX() == event.getTo().getBlockX() && event.getFrom().getBlockY() == event.getTo().getBlockY() && event.getFrom().getBlockZ() == event.getTo().getBlockZ())
+        if (event.isCancelled() || (event.getFrom().getBlockX() == event.getTo().getBlockX() && event.getFrom().getBlockY() == event.getTo().getBlockY() && event.getFrom().getBlockZ() == event.getTo().getBlockZ()))
             return;
         Player player = event.getPlayer();
         Integer queue = queuedTransports.get(player);

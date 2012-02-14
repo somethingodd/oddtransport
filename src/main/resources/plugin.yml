@@ -1,6 +1,6 @@
 name: OddTransport
 main: info.somethingodd.bukkit.OddTransport.OddTransport
-version: 0.1
+version: 0.2
 website: http://bukkit.somethingodd.info
 author: petteyg359
 softdepend: [OddItem]
@@ -14,9 +14,9 @@ commands:
 permissions:
     oddtransport:
         children:
-            oddtransport.clear: op
+            oddtransport.clear: false
             oddtransport.create: true
-            oddtransport.destroy: op
+            oddtransport.destroy: false
             oddtransport.list: true
             oddtransport.use: true
         default: op
@@ -30,6 +30,9 @@ permissions:
     oddtransport.destroy:
         default: op
         description: Allows destruction of all transporters
+    oddtransport.list:
+        default: true
+        description: Allows listing of owned transporters.
     oddtransport.use:
         default: true
         description: Allows use of all transporters
