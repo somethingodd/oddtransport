@@ -11,7 +11,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package info.somethingodd.bukkit.OddTransport;
+package info.somethingodd.OddTransport;
 
 import org.bukkit.Location;
 import org.bukkit.command.Command;
