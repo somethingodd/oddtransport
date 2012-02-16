@@ -1,5 +1,5 @@
 name: OddTransport
-main: info.somethingodd.bukkit.OddTransport.OddTransport
+main: info.somethingodd.OddTransport.OddTransport
 version: 0.2
 website: http://bukkit.somethingodd.info
 author: petteyg359
