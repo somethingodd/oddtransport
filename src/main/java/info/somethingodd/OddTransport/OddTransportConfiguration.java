@@ -18,7 +18,12 @@ import info.somethingodd.OddItem.configuration.OddItemGroup;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.inventory.ItemStack;
 
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.InputStreamReader;
 
 /**
  * @author Gordon Pettey (petteyg359@gmail.com)
@@ -37,6 +42,13 @@ public class OddTransportConfiguration {
     }
 
     protected void configure() {
+        String[] filenames = {"config.yml"};
+        try {
+            initialConfig(filenames);
+        } catch (Exception e) {
+            oddTransport.log.warning("Exception writing initial configuration files: " + e.getMessage());
+            e.printStackTrace();
+        }
         YamlConfiguration defaultConfiguration = new YamlConfiguration();
         try {
             defaultConfiguration.load(oddTransport.getResource("OddTransport.yml"));
@@ -59,5 +71,37 @@ public class OddTransportConfiguration {
         this.use = items.get(3);
         this.delay = configuration.getInt("delay");
         this.consume = configuration.getBoolean("consume");
+    }
+
+    private void initialConfig(String[] filenames) throws IOException {
+        for (String filename : filenames) {
+            File file = new File(oddTransport.getDataFolder(), filename);
+            if (!file.exists()) {
+                BufferedReader src = new BufferedReader(new InputStreamReader(getClass().getResourceAsStream("/" + filename)));
+                BufferedWriter dst = new BufferedWriter(new FileWriter(file));
+                try {
+                    file.mkdirs();
+                    file.createNewFile();
+                    src = new BufferedReader(new InputStreamReader(getClass().getResourceAsStream("/" + filename)));
+                    dst = new BufferedWriter(new FileWriter(file));
+                    String line = src.readLine();
+                    while (line != null) {
+                        dst.write(line + "\n");
+                        line = src.readLine();
+                    }
+                    src.close();
+                    dst.close();
+                    oddTransport.log.info("Wrote default " + filename);
+                } catch (IOException e) {
+                    oddTransport.log.warning("Error writing default " + filename);
+                } finally {
+                    try {
+                        src.close();
+                        dst.close();
+                    } catch (IOException e) {
+                    }
+                }
+            }
+        }
     }
 }
