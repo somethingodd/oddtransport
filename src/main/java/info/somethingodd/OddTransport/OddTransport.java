@@ -42,14 +42,14 @@ public class OddTransport extends JavaPlugin {
         locations = null;
         oddTransportCommand = null;
         oddTransportListener = null;
-        log.info(logPrefix + "disabled");
+        log.info("disabled");
         logPrefix = null;
         log = null;
     }
 
     @Override
     public void onEnable() {
-        logPrefix = "[" + getDescription().getName() + "] ";
+        log = getLogger();
         oddTransportCommand = new OddTransportCommand(this);
         oddTransportListener = new OddTransportListener(this);
         oddTransportConfiguration = new OddTransportConfiguration(this);
@@ -59,6 +59,6 @@ public class OddTransport extends JavaPlugin {
         transporters = Collections.synchronizedMap(new HashMap<Location, Player>());
         queuedTransports = Collections.synchronizedMap(new HashMap<Player, Integer>());
         locations = Collections.synchronizedMap(new HashMap<Location, Location>());
-        log.info(logPrefix + getDescription().getVersion() + " enabled");
+        log.info(getDescription().getVersion() + " enabled");
     }
 }
