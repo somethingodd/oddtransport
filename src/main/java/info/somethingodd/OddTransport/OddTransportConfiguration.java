@@ -49,21 +49,7 @@ public class OddTransportConfiguration {
             oddTransport.log.warning("Exception writing initial configuration files: " + e.getMessage());
             e.printStackTrace();
         }
-        YamlConfiguration defaultConfiguration = new YamlConfiguration();
-        try {
-            defaultConfiguration.load(oddTransport.getResource("OddTransport.yml"));
-        } catch (Exception e) {
-            oddTransport.log.warning(oddTransport.logPrefix + "Error loading default configuration! " + e.getMessage());
-            e.printStackTrace();
-        }
-        File configurationFile = new File(oddTransport.getDataFolder() + File.separator + "OddTransport.yml");
-        YamlConfiguration configuration = new YamlConfiguration();
-        try {
-            configuration.load(configurationFile);
-        } catch (Exception e) {
-            oddTransport.log.warning(oddTransport.logPrefix + "Error loading configuration file! " + e.getMessage());
-            e.printStackTrace();
-        }
+        YamlConfiguration configuration = (YamlConfiguration) oddTransport.getConfig();
         OddItemGroup items = OddItem.getItemGroup("oddtransport");
         this.block = items.get(0);
         this.create = items.get(1);
