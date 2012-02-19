@@ -63,8 +63,8 @@ public class OddTransportConfiguration {
         for (String filename : filenames) {
             File file = new File(oddTransport.getDataFolder(), filename);
             if (!file.exists()) {
-                BufferedReader src = new BufferedReader(new InputStreamReader(getClass().getResourceAsStream("/" + filename)));
-                BufferedWriter dst = new BufferedWriter(new FileWriter(file));
+                BufferedReader src = null;
+                BufferedWriter dst = null;
                 try {
                     file.mkdirs();
                     file.createNewFile();
@@ -84,7 +84,7 @@ public class OddTransportConfiguration {
                     try {
                         src.close();
                         dst.close();
-                    } catch (IOException e) {
+                    } catch (Exception e) {
                     }
                 }
             }
