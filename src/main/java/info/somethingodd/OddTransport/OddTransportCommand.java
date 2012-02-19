@@ -39,8 +39,8 @@ public class OddTransportCommand implements CommandExecutor {
         switch (args.length) {
             case 1:
                 if (args[0].equals("info")) {
-                    sender.sendMessage(oddTransport.logPrefix + "block create destroy use");
-                    sender.sendMessage(oddTransport.logPrefix + oddTransport.oddTransportConfiguration.block.getType().toString()+";"+ oddTransport.oddTransportConfiguration.block.getDurability() + " " + oddTransport.oddTransportConfiguration.create.getType().toString() + ";" + oddTransport.oddTransportConfiguration.create.getDurability() + " " + oddTransport.oddTransportConfiguration.destroy.getType().toString() + ";" + oddTransport.oddTransportConfiguration.destroy.getDurability() + " " + oddTransport.oddTransportConfiguration.use.getType().toString() + ";" + oddTransport.oddTransportConfiguration.use.getDurability());
+                    sender.sendMessage("block create destroy use");
+                    sender.sendMessage(oddTransport.oddTransportConfiguration.block.getType().toString()+";"+ oddTransport.oddTransportConfiguration.block.getDurability() + " " + oddTransport.oddTransportConfiguration.create.getType().toString() + ";" + oddTransport.oddTransportConfiguration.create.getDurability() + " " + oddTransport.oddTransportConfiguration.destroy.getType().toString() + ";" + oddTransport.oddTransportConfiguration.destroy.getDurability() + " " + oddTransport.oddTransportConfiguration.use.getType().toString() + ";" + oddTransport.oddTransportConfiguration.use.getDurability());
 
                 } else if (args[0].equals("list")) {
                     Set<Entry<Location, Player>> es = oddTransport.transporters.entrySet();
@@ -49,7 +49,7 @@ public class OddTransportCommand implements CommandExecutor {
                         if (e.getValue().equals(sender))
                             l.add(e.getKey());
                     }
-                    sender.sendMessage(oddTransport.logPrefix + l.toString());
+                    sender.sendMessage(l.toString());
                 }
                 return true;
         }

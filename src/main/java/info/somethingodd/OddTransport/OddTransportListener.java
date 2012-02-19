@@ -58,12 +58,12 @@ public class OddTransportListener implements Listener {
                 Location linkLoc = locations.get(player);
                 if (linkLoc == null) {
                     locations.put(player, location);
-                    player.sendMessage(oddTransport.logPrefix + "Transporter created at " + location.getX() + "," + location.getY() + "," + location.getZ() + ".");
+                    player.sendMessage("Transporter created at " + location.getX() + "," + location.getY() + "," + location.getZ() + ".");
                 } else {
                     oddTransport.locations.put(location, linkLoc);
                     oddTransport.locations.put(linkLoc, location);
                     locations.remove(player);
-                    player.sendMessage(oddTransport.logPrefix + "Transporter linked from " + location.getX() + "," + location.getY() + "," + location.getZ() + " to " + linkLoc.getX() + "," + linkLoc.getY() + "," + linkLoc.getZ() + ".");
+                    player.sendMessage("Transporter linked from " + location.getX() + "," + location.getY() + "," + location.getZ() + " to " + linkLoc.getX() + "," + linkLoc.getY() + "," + linkLoc.getZ() + ".");
                     if (oddTransport.oddTransportConfiguration.consume) OddItem.removeItem(player, oddTransport.oddTransportConfiguration.create);
                 }
             }
@@ -81,7 +81,7 @@ public class OddTransportListener implements Listener {
             } else if (OddItem.compare(inHand, oddTransport.oddTransportConfiguration.use)) {
                 if (oddTransport.transporters.get(location).equals(player) || player.hasPermission("oddtransport.use.other")) {
                     Location l2 = oddTransport.locations.get(location);
-                    player.sendMessage(oddTransport.logPrefix + "Transporting to " + l2.getX() + "," + l2.getY() + "," + l2.getZ() + " in " + oddTransport.oddTransportConfiguration.delay + " seconds...");
+                    player.sendMessage("Transporting to " + l2.getX() + "," + l2.getY() + "," + l2.getZ() + " in " + oddTransport.oddTransportConfiguration.delay + " seconds...");
                     Integer queue = queuedTransports.get(player);
                     if (queue != null) {
                         oddTransport.getServer().getScheduler().cancelTask(queue);
