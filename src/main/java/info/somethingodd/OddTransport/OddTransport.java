@@ -27,7 +27,6 @@ import java.util.logging.Logger;
  */
 public class OddTransport extends JavaPlugin {
     protected Logger log;
-	protected String logPrefix;
     protected Map<Player, Integer> queuedTransports;
     protected Map<Location, Player> transporters;
     protected Map<Location, Location> locations;
@@ -43,7 +42,6 @@ public class OddTransport extends JavaPlugin {
         oddTransportCommand = null;
         oddTransportListener = null;
         log.info("disabled");
-        logPrefix = null;
         log = null;
     }
 
