@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="SomethingOdd">
+    <bannerLeft>
+        <name>OddTransport</name>
+        <src></src>
+        <href>http://bukkit.somethingodd.info/OddTransport</href>
+    </bannerLeft>
+    <body>
+        <links>
+            <item name="Homepage" href="http://somethingodd.info/"/>
+            <item name="Source/Github" href="https://github.com/somethingodd/"/>
+            <item name="Continuous Integration/Jenkins" href="http://ci.somethingodd.info/"/>
+            <item name="Maven Repo" href="http://repo.somethingodd.info/"/>
+        </links>
+        <menu name="SomethingOdd">
+            <item name="Homepage" href="http://somethingodd.info/"/>
+            <item name="Source/Github" href="https://github.com/somethingodd/"/>
+            <item name="Continuous Integration/Jenkins" href="http://ci.somethingodd.info/"/>
+            <item name="Maven Repo" href="http://repo.somethingodd.info/"/>
+        </menu>
+        <menu ref="reports"/>
+    </body>
+</project>
