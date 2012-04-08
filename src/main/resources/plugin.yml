@@ -1,7 +1,7 @@
 name: OddTransport
 main: info.somethingodd.OddTransport.OddTransport
-version: 0.2
-website: http://bukkit.somethingodd.info
+version: ${pom.version}
+website: ${pom.url}
 author: petteyg359
 softdepend: [OddItem]
 description: >
